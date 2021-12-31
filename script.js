@@ -8,7 +8,7 @@ canvas.height = 600;
 let leftScore = 0;
 let rightScore = 0;
 let gameFrame = 0;
-let gameState = 0;
+let canMove = 1;
 ctx.font = '30px Georgia';
 
 // Ball and Goal constants
@@ -29,13 +29,13 @@ drawGoals();
 
 // Event handlers
 document.addEventListener("keydown", function (event) {
+  if (canMove == 1) {
 if (event.which === 90) {
   // move left if z key is pressed
 drawPlayer(x - 10, y);
 x -= 10;
 drawGoals();
 checkIfWin();
-console.log(ballHitLeftGoal());
 }
 if (event.which === 88) {
   // move right if x key is pressed
@@ -43,12 +43,12 @@ drawPlayer(x + 10, y);
 x += 10;
 drawGoals();
 checkIfWin();
-console.log(ballHitLeftGoal());
 }
+  }
 })
 
 document.addEventListener("mousedown", function (event) {
-  if (gameState == 1) {
+  if (canMove == 0) {
     reset();
   }
 })
@@ -84,21 +84,19 @@ function drawGoals() {
 
 // Winning condition checks
 function checkIfWin() {
-  if (ballHitLeftGoal) {
+  if (ballHitLeftGoal()) {
     win();
-    console.log("left win");
-  } else if (ballHitRightGoal) {
+  } else if (ballHitRightGoal()) {
     win();
-    console.log("right win");
-  }
+  } 
 }
 
 function ballHitLeftGoal() {
-  return getBallLeftPosition <= leftGoalxPosition + goalWidth;
+  return getBallLeftPosition() <= leftGoalxPosition + goalWidth;
 }
 
 function ballHitRightGoal() {
-  return getBallRightPosition >= rightGoalxPosition - goalWidth;
+  return getBallRightPosition() >= rightGoalxPosition - goalWidth;
 }
 
 function getBallLeftPosition() {
@@ -112,9 +110,8 @@ function getBallRightPosition() {
 // Winning sequence
 function win() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillText("shit", canvas.width / 2, canvas.height / 2);
-  gameState = 1;
-  return;
+  ctx.fillText("ok", canvas.width / 2, canvas.height / 2);
+  canMove = 0;
 }
 
 function reset() {
@@ -123,5 +120,5 @@ y = canvas.height / 2;
 
 drawPlayer(x, y);
 drawGoals();
-gameState = 0;
+canMove = 1;
 }
