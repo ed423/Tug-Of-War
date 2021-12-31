@@ -9,6 +9,7 @@ let leftScore = 0;
 let rightScore = 0;
 let gameFrame = 0;
 let canMove = 1;
+var down = false;
 ctx.font = '30px Georgia';
 
 // Ball and Goal constants
@@ -29,13 +30,14 @@ drawGoals();
 
 // Event handlers
 document.addEventListener("keydown", function (event) {
-  if (canMove == 1) {
+  if (canMove == 1 && !down) {
 if (event.which === 90) {
   // move left if z key is pressed
 drawPlayer(x - 10, y);
 x -= 10;
 drawGoals();
 checkIfWin();
+down = true;
 }
 if (event.which === 88) {
   // move right if x key is pressed
@@ -43,11 +45,17 @@ drawPlayer(x + 10, y);
 x += 10;
 drawGoals();
 checkIfWin();
+down = true;
 }
   }
 })
 
-document.addEventListener("mousedown", function (event) {
+document.addEventListener("keyup", function () {
+  down = false;
+
+})
+
+document.addEventListener("mousedown", function () {
   if (canMove == 0) {
     reset();
   }
@@ -85,9 +93,9 @@ function drawGoals() {
 // Winning condition checks
 function checkIfWin() {
   if (ballHitLeftGoal()) {
-    win();
+    lwin();
   } else if (ballHitRightGoal()) {
-    win();
+    rwin();
   } 
 }
 
@@ -108,9 +116,17 @@ function getBallRightPosition() {
 }
 
 // Winning sequence
-function win() {
+function rwin() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillText("ok", canvas.width / 2, canvas.height / 2);
+  ctx.textAlign = "center";
+  ctx.fillText("Red won!", canvas.width / 2, canvas.height / 2);
+  canMove = 0;
+}
+
+function lwin() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.textAlign = "center";
+  ctx.fillText("Blue won!", canvas.width / 2, canvas.height / 2);
   canMove = 0;
 }
 
